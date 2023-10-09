@@ -31,7 +31,19 @@ export class AppService {
       if (profile.result) {
 
         //save email and refresh token or update refresh token if email exist
-        await this.createOrUpdateUser(profile.result.email, googleTokens.result.refresh_token)
+        let refreshToken: string
+        if (googleTokens.result.refresh_token) {
+          refreshToken = googleTokens.result.refresh_token
+        } else {
+          //load from database
+          const user = await this.prismaService.user.findUniqueOrThrow({
+            where: {
+              email: profile.result.email
+            }
+          })
+          refreshToken = user.refreshToken
+        }
+        await this.createOrUpdateUser(profile.result.email, refreshToken)
         result.statusCode = profile.statusCode
         const token = await this.jwtService.signAsync({
           google_access_token: googleTokens.result.access_token,
@@ -49,8 +61,8 @@ export class AppService {
   }
   async getNewGoogleAccessToken(email: string) {
     const user = await this.prismaService.user.findUniqueOrThrow({
-      where:{
-        email
+      where: {
+        email: email
       }
     })
     let result: Result<{
