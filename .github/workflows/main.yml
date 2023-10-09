@@ -1,0 +1,42 @@
+
+name: Deploy Nest.js App
+
+on:
+  push:
+    branches: [main]
+
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+            node-version: ${{ matrix.node-version }}
+      
+      - name: building and running
+        env:
+          GOOGLE_CLIENT_ID:  ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET:  ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REDIRECT_URI: "https://excalidraw-drive-nine.vercel.app/redirect"
+          PORT: 3000
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          printenv
+          pnpm install
+          pnpx prisma generate
+          pnpm run build
+          pm2 delete excalidraw-drive || true
+          pnpm run  start:prod
+        
+
+
+       
