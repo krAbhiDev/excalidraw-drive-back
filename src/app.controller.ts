@@ -1,21 +1,21 @@
-import { Controller, Get, Post, Query, Request } from '@nestjs/common';
+import { Controller, Get, Post, Query, Request, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Public } from './auth/auth.guard';
+import { Response } from 'express';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) { }
   @Public()
   @Get('tokens')
-  tokens(@Query('code') code: string) {
-    return this.appService.getTokens(code)
+  async tokens(@Query('code') code: string, @Res() res: Response) {
+    const result = await this.appService.getTokens(code)
+    res.status(result.statusCode).send(result)
   }
 
   @Get('google/refresh/access_token')
-  refreshGoogleAccessToken(@Request() req:any) {
-    return this.appService.getNewGoogleAccessToken(req.email)
+  async refreshGoogleAccessToken(@Request() req: any, @Res() res: Response) {
+    const result = await this.appService.getNewGoogleAccessToken(req.email)
+    res.status(result.statusCode).send(result)
   }
-  
-
-  
 }
