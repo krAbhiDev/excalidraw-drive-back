@@ -73,17 +73,18 @@ export class AppService {
     }
     const tokenResult = await this.fetchService.getNewGoogleAccessToken(user.refreshToken)
     if (tokenResult.result) {
-      await this.createOrUpdateUser(email, tokenResult.result.access_token)
       result.result = {
         google_access_token: tokenResult.result.access_token
       }
       result.statusCode = 200
     } else {
+      console.log({tokenResult})
       result = { ...result, ...tokenResult as any, errorMessage: "cannot fetch getNewGoogleAccessToken" }
     }
     return result
   }
   createOrUpdateUser(email: string, refreshToken: string) {
+    console.log("saving to database", {email,refreshToken})
     return this.prismaService.user.upsert({
       create: {
         email: email,

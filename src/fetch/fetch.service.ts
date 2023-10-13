@@ -30,7 +30,6 @@ export default class FetchService {
         return result
     }
     async getNewGoogleAccessToken(refresh_token: string) {
-
         const result = await googleApiCall<{
             access_token: string
         }>({
@@ -44,6 +43,7 @@ export default class FetchService {
                 grant_type: 'refresh_token'
             }
         })
+        console.log({refresh_token},{result})
         return result
     }
 
