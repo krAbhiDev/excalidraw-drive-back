@@ -25,7 +25,7 @@ jobs:
         env:
           GOOGLE_CLIENT_ID:  ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET:  ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          GOOGLE_REDIRECT_URI: "https://excalidraw-drive-nine.vercel.app/redirect"
+          GOOGLE_REDIRECT_URI: "https://drive-excalidraw.vercel.app/redirect"
           PORT: 3000
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
